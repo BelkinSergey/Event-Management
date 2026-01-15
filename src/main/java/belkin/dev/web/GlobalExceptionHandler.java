@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -43,12 +44,21 @@ public class GlobalExceptionHandler {
                 .body(errorDto);
     }
 
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorMessageResponse> HandlerMethodValidationException(HandlerMethodValidationException e) {
+        log.error("Некорректный id", e);
+        var errorDto = new ErrorMessageResponse("Некорректный id", e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
+    }
+
+
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessageResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         log.error("Некорректный запрос", e);
         var errorDto = new ErrorMessageResponse("Некорректный запрос",
-                "Адрес должен быть уникальным", LocalDateTime.now());
+                e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
     }

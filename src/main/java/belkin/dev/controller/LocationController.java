@@ -6,6 +6,7 @@ import belkin.dev.dto.LocationDto;
 import belkin.dev.mapper.LocationMapper;
 import belkin.dev.service.LocationService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -60,8 +61,10 @@ public class LocationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LocationDto> updateLocation(@PathVariable Integer id,
-                                                      @Valid @RequestBody LocationDto locationDtoToUpdate) {
+    public ResponseEntity<LocationDto> updateLocation(
+            @Min(value = 1, message = "ID должен быть положительным числом")
+            @PathVariable Integer id,
+            @Valid @RequestBody LocationDto locationDtoToUpdate) {
         log.info("Обновляем локацию по id {}, данные {}", id, locationDtoToUpdate);
         var updatedLocation = locationService.updatelocation(
                 id,
@@ -74,7 +77,10 @@ public class LocationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLocationById(@Valid @PathVariable Integer id) {
+    public ResponseEntity<Void> deleteLocationById(
+            @Min(value = 1, message = "ID должен быть положительным числом")
+            @PathVariable
+            Integer id) {
         log.info("Удаляем локацию по id {}", id);
         locationService.deleteLocation(id);
 

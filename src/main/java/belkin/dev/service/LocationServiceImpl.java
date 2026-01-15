@@ -61,7 +61,6 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location updatelocation(Integer id, Location location) {
-        checkId(id);
         var foundEntity = findLocationById(id);
         if (location.capacity() < foundEntity.capacity()) {
             throw new IllegalArgumentException("Количесвто участников не может быть меньше заявленного изначально");
@@ -79,14 +78,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void deleteLocation(Integer id) {
-        checkId(id);
         findLocationById(id);
         locationRepository.deleteById(id);
-    }
-
-    private void checkId(Integer id) {
-        if (id == null || id < 0) {
-            throw new IllegalArgumentException("id должен быть положительным");
-        }
     }
 }
