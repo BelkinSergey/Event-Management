@@ -1,9 +1,9 @@
-package belkin.dev.service;
+package belkin.dev.location.service;
 
-import belkin.dev.LocationSearchFilter;
-import belkin.dev.dto.Location;
-import belkin.dev.mapper.LocationMapper;
-import belkin.dev.repository.LocationRepository;
+import belkin.dev.location.LocationSearchFilter;
+import belkin.dev.location.dto.Location;
+import belkin.dev.location.mapper.LocationMapper;
+import belkin.dev.location.repository.LocationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

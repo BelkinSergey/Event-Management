@@ -1,4 +1,4 @@
-package belkin.dev.dto;
+package belkin.dev.location.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Min;

@@ -1,4 +1,4 @@
-package belkin.dev.model;
+package belkin.dev.location.model;
 
 import jakarta.persistence.*;
 

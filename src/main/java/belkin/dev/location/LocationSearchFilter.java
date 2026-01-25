@@ -1,4 +1,4 @@
-package belkin.dev;
+package belkin.dev.location;
 
 import jakarta.validation.constraints.Min;
 

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,14 +23,14 @@ public class GlobalExceptionHandler {
     Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<@NonNull ErrorMessageResponse> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<@NonNull ServerErrorDto> handleValidationException(MethodArgumentNotValidException e) {
         log.error("Запрос с невалидными данными", e);
         String detailMessage = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ":" + error.getDefaultMessage())
                 .collect(Collectors.joining(","));
-        var errorDto = new ErrorMessageResponse("Ошибка валидации запроса", detailMessage,
+        var errorDto = new ServerErrorDto("Ошибка валидации запроса", detailMessage,
                 LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
@@ -37,17 +38,17 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorMessageResponse> handleNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<ServerErrorDto> handleNotFoundException(EntityNotFoundException e) {
         log.error("Сущность не найдена", e);
-        var errorDto = new ErrorMessageResponse("сущность не найдена", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ServerErrorDto("сущность не найдена", e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(errorDto);
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<ErrorMessageResponse> HandlerMethodValidationException(HandlerMethodValidationException e) {
+    public ResponseEntity<ServerErrorDto> HandlerMethodValidationException(HandlerMethodValidationException e) {
         log.error("Некорректный id", e);
-        var errorDto = new ErrorMessageResponse("Некорректный id", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ServerErrorDto("Некорректный id", e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
     }
@@ -55,27 +56,35 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorMessageResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+    public ResponseEntity<ServerErrorDto> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         log.error("Некорректный запрос", e);
-        var errorDto = new ErrorMessageResponse("Некорректный запрос",
+        var errorDto = new ServerErrorDto("Некорректный запрос",
                 e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorMessageResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<ServerErrorDto> handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("ошибка валидации запроса", e);
-        var errorDto = new ErrorMessageResponse("ошибка валидации запроса", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ServerErrorDto("ошибка валидации запроса", e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorDto);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorMessageResponse> handleGenericException(Exception e) {
+    public ResponseEntity<ServerErrorDto> handleGenericException(Exception e) {
         log.error("Ошибка сервера", e);
-        var errorDto = new ErrorMessageResponse("Ошибка сервера", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ServerErrorDto("Ошибка сервера", e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ServerErrorDto> handleAuthorizationException(Exception e) {
+        log.error("Ошибка авторизации", e);
+        var errorDto = new ServerErrorDto("Ошибка авторизации", e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(errorDto);
     }
 
