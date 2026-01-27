@@ -1,4 +1,4 @@
-package belkin.dev.dto;
+package belkin.dev.location.dto;
 
 public record Location(
 

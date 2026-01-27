@@ -1,8 +1,8 @@
-package belkin.dev.mapper;
+package belkin.dev.location.mapper;
 
-import belkin.dev.dto.Location;
-import belkin.dev.dto.LocationDto;
-import belkin.dev.model.LocationEntity;
+import belkin.dev.location.dto.Location;
+import belkin.dev.location.dto.LocationDto;
+import belkin.dev.location.model.LocationEntity;
 import org.springframework.stereotype.Component;
 
 @Component

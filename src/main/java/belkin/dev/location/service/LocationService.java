@@ -1,7 +1,7 @@
-package belkin.dev.service;
+package belkin.dev.location.service;
 
-import belkin.dev.LocationSearchFilter;
-import belkin.dev.dto.Location;
+import belkin.dev.location.LocationSearchFilter;
+import belkin.dev.location.dto.Location;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package belkin.dev.repository;
+package belkin.dev.location.repository;
 
-import belkin.dev.model.LocationEntity;
+import belkin.dev.location.model.LocationEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

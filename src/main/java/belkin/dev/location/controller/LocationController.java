@@ -1,10 +1,10 @@
-package belkin.dev.controller;
+package belkin.dev.location.controller;
 
-import belkin.dev.LocationSearchFilter;
-import belkin.dev.dto.Location;
-import belkin.dev.dto.LocationDto;
-import belkin.dev.mapper.LocationMapper;
-import belkin.dev.service.LocationService;
+import belkin.dev.location.LocationSearchFilter;
+import belkin.dev.location.dto.Location;
+import belkin.dev.location.dto.LocationDto;
+import belkin.dev.location.mapper.LocationMapper;
+import belkin.dev.location.service.LocationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
