@@ -1,7 +1,7 @@
 package belkin.dev.security.jwt;
 
-import belkin.dev.user.dto.User;
-import belkin.dev.user.service.UserService;
+import belkin.dev.users.dto.User;
+import belkin.dev.users.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

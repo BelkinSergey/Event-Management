@@ -56,13 +56,35 @@ public class SecurityConfiguration {
                                 .hasAnyAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/locations")
                                 .hasAnyAuthority("ADMIN")
+
                                 .requestMatchers(HttpMethod.GET, "/users/{id}")
                                 .hasAnyAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/users")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/auth")
                                 .permitAll()
-                                .anyRequest().authenticated()
+
+                                .requestMatchers(HttpMethod.POST, "/events")
+                                .hasAnyAuthority("USER")
+                                .requestMatchers(HttpMethod.GET, "/events/{id}")
+                                .hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/events/{id}")
+                                .hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/events/{id}")
+                                .hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/events/search")
+                                .hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/events/my")
+                                .hasAnyAuthority("USER")
+                                .requestMatchers(HttpMethod.DELETE, "/events/registrations/cansel/{id}")
+                                .hasAnyAuthority("USER")
+                                .requestMatchers(HttpMethod.GET, "/events/registrations/my")
+                                .hasAnyAuthority("USER")
+
+
+                                .requestMatchers(HttpMethod.POST, "/events/registrations/{id}")
+                                .hasAnyAuthority("USER")
+
                 )
                 .exceptionHandling(exception ->
                         exception
