@@ -1,7 +1,7 @@
 package belkin.dev.events.controller;
 
 import belkin.dev.events.dto.EventInDto;
-import belkin.dev.events.dto.EventOutDto;
+import belkin.dev.events.dto.EventResponseDto;
 import belkin.dev.events.dto.EventSearchDto;
 import belkin.dev.events.dto.EventUpdateDto;
 import belkin.dev.events.mapper.EventMapper;
@@ -34,11 +34,11 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<EventOutDto> createEvent(
+    public ResponseEntity<EventResponseDto> createEvent(
             @RequestBody @Valid EventInDto eventInDto
     ) {
         log.info("получен запрос на создание мероприятия: {}", eventInDto);
-        EventOutDto createdEvent = eventService.createEvent(
+        EventResponseDto createdEvent = eventService.createEvent(
                 eventMapper.toEvent(eventInDto)
         );
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -47,12 +47,12 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventOutDto> findEventById(@PathVariable @Min(value = 1,
+    public ResponseEntity<EventResponseDto> findEventById(@PathVariable @Min(value = 1,
             message = "ID должен быть положительным числом") Integer id) {
         log.info("получен запрос на поиск мероприятия по id:{}", id);
-        EventOutDto eventOutDto = eventService.findEventById(id);
+        EventResponseDto eventResponseDto = eventService.findEventById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(eventOutDto);
+                .body(eventResponseDto);
     }
 
     @PostMapping("/registrations/{id}")
@@ -65,18 +65,18 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<@NonNull EventOutDto> updateEvent(
+    public ResponseEntity<@NonNull EventResponseDto> updateEvent(
             @Min(1)
             @PathVariable("id")
             Integer eventId,
             @Valid @RequestBody EventUpdateDto eventUpdateDto
     ) {
         log.info("получен запрос на обновление мероприятия {}", eventId);
-        EventOutDto eventOutDto = eventService.updateEvent(eventId, eventMapper.toEventFromUpdateDto(eventUpdateDto));
+        EventResponseDto eventResponseDto = eventService.updateEvent(eventId, eventMapper.toEventFromUpdateDto(eventUpdateDto));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(eventOutDto);
+                .body(eventResponseDto);
     }
 
     @DeleteMapping("/{id}")
@@ -89,25 +89,25 @@ public class EventController {
                 .build();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<EventOutDto>> searchEventByFilter(
+    @PostMapping("/search")
+    public ResponseEntity<List<EventResponseDto>> searchEventByFilter(
             @Valid @RequestBody EventSearchDto eventSearchDto
     ) {
         log.info("получен запрос на поиск мероприятия");
-        List<EventOutDto> eventList = eventService.searchEvent(eventSearchDto);
+        List<EventResponseDto> eventList = eventService.searchEvent(eventSearchDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(eventList);
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<EventOutDto>> getAllEventsByOwner() {
+    public ResponseEntity<List<EventResponseDto>> getAllEventsByOwner() {
         log.info("получен запрос на получение всех мероприятий пользователя");
-        List<EventOutDto> eventList = eventService.getAllEventsByOwner();
+        List<EventResponseDto> eventList = eventService.getAllEventsByOwner();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(eventList);
     }
 
-    @DeleteMapping("/registrations/cansel/{id}")
+    @DeleteMapping("/registrations/cancel/{id}")
     public ResponseEntity<Void> canselRegistration(@Min(1) @PathVariable("id") Integer eventId) {
         log.info("получен запрос отмену регистрации на мероприятие");
         eventService.canselRegistration(eventId);
@@ -117,7 +117,7 @@ public class EventController {
 
     @GetMapping("/registrations/my")
 
-    public ResponseEntity<List<EventOutDto>> getAllEventsByRegisterUser() {
+    public ResponseEntity<List<EventResponseDto>> getAllEventsByRegisterUser() {
         log.info("получен запрос получение всех мероприятий, на которые зарагестрирован пользователь");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(eventService.getAllEventsByRegisterUser());

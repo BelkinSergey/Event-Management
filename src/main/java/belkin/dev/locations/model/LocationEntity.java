@@ -9,18 +9,18 @@ public class LocationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column(nullable = false, unique = true)
-    String address;
+    private String address;
 
     @Column(nullable = false)
-    Integer capacity;
+    private Integer capacity;
 
-    String description;
+    private String description;
 
     public LocationEntity() {
     }

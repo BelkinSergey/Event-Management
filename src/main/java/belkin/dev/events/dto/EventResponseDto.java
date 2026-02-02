@@ -3,7 +3,7 @@ package belkin.dev.events.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record EventOutDto(
+public record EventResponseDto(
 
         Integer id,
 

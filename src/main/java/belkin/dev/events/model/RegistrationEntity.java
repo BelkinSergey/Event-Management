@@ -8,13 +8,13 @@ public class RegistrationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    Integer userId;
+    private Integer userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventId")
-    EventEntity event;
+    private EventEntity event;
 
 
     public RegistrationEntity(Integer userId, EventEntity event) {

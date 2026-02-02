@@ -13,28 +13,28 @@ public class EventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    String name;
+    private String name;
 
-    Integer ownerId;
+    private Integer ownerId;
 
-    Integer maxPlaces;
+    private Integer maxPlaces;
 
-    Integer occupiedPlaces;
+    private Integer occupiedPlaces;
 
-    LocalDateTime date;
+    private LocalDateTime date;
 
-    BigDecimal cost;
+    private BigDecimal cost;
 
-    Integer duration;
+    private Integer duration;
 
-    Integer locationId;
+    private Integer locationId;
 
-    String status;
+    private String status;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<RegistrationEntity> registrationList;
+    private List<RegistrationEntity> registrationList;
 
     public EventEntity(Integer id,
                        String name,

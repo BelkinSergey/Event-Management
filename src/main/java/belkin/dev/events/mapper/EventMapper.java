@@ -3,7 +3,7 @@ package belkin.dev.events.mapper;
 
 import belkin.dev.events.dto.Event;
 import belkin.dev.events.dto.EventInDto;
-import belkin.dev.events.dto.EventOutDto;
+import belkin.dev.events.dto.EventResponseDto;
 import belkin.dev.events.dto.EventUpdateDto;
 import belkin.dev.events.model.EventEntity;
 import belkin.dev.events.model.RegistrationEntity;
@@ -47,8 +47,8 @@ public class EventMapper {
         );
     }
 
-    public EventOutDto toOutDtoFromEntity(EventEntity eventEntity) {
-        return new EventOutDto(eventEntity.getId(),
+    public EventResponseDto toOutDtoFromEntity(EventEntity eventEntity) {
+        return new EventResponseDto(eventEntity.getId(),
                 eventEntity.getName(),
                 eventEntity.getOwnerId(),
                 eventEntity.getMaxPlaces(),

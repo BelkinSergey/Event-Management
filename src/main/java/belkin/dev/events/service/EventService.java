@@ -1,28 +1,28 @@
 package belkin.dev.events.service;
 
 import belkin.dev.events.dto.Event;
-import belkin.dev.events.dto.EventOutDto;
+import belkin.dev.events.dto.EventResponseDto;
 import belkin.dev.events.dto.EventSearchDto;
 
 import java.util.List;
 
 public interface EventService {
-    EventOutDto createEvent(Event event);
+    EventResponseDto createEvent(Event event);
 
-    EventOutDto findEventById(Integer id);
+    EventResponseDto findEventById(Integer id);
 
     void registerToEvent(Integer id);
 
-    EventOutDto updateEvent(Integer eventId, Event eventFromUpdateDto);
+    EventResponseDto updateEvent(Integer eventId, Event eventFromUpdateDto);
 
     void deleteEvent(Integer eventId);
 
-    List<EventOutDto> searchEvent(EventSearchDto eventSearchDto);
+    List<EventResponseDto> searchEvent(EventSearchDto eventSearchDto);
 
-    List<EventOutDto> getAllEventsByOwner();
+    List<EventResponseDto> getAllEventsByOwner();
 
     void canselRegistration(Integer eventId);
 
-    List<EventOutDto> getAllEventsByRegisterUser();
+    List<EventResponseDto> getAllEventsByRegisterUser();
 
 }

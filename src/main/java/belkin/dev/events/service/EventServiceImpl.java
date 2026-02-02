@@ -3,7 +3,7 @@ package belkin.dev.events.service;
 
 import belkin.dev.events.EventStatus;
 import belkin.dev.events.dto.Event;
-import belkin.dev.events.dto.EventOutDto;
+import belkin.dev.events.dto.EventResponseDto;
 import belkin.dev.events.dto.EventSearchDto;
 import belkin.dev.events.mapper.EventMapper;
 import belkin.dev.events.model.EventEntity;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -46,7 +47,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventOutDto createEvent(Event event) {
+    public EventResponseDto createEvent(Event event) {
         var location = locationService.findLocationById(event.locationId());
         checkMaxPlaces(location, event);
         var user = authenticationService.getCurrentAuthenticatedUserOrThrow();
@@ -64,7 +65,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public EventOutDto findEventById(Integer id) {
+    public EventResponseDto findEventById(Integer id) {
         return eventMapper.toOutDtoFromEntity(getEventEntity(id));
 
     }
@@ -81,6 +82,15 @@ public class EventServiceImpl implements EventService {
                 event
         );
 
+        Optional<RegistrationEntity> result = event.getRegistrationList().stream()
+                .filter(registration -> Objects.equals(registration
+                        .getUserId(), user.id()))
+                .findFirst();
+
+        if (result.isPresent()) {
+            throw new IllegalArgumentException("этот пользователь уже зарегестрирован");
+        }
+
         var savedRegistration = registrationRepository.save(registrationEntity);
         event.getRegistrationList().add(savedRegistration);
         event.setOccupiedPlaces(event.getOccupiedPlaces() + 1);
@@ -90,7 +100,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventOutDto updateEvent(Integer eventId, Event eventFromUpdateDto) {
+    public EventResponseDto updateEvent(Integer eventId, Event eventFromUpdateDto) {
         User user = authenticationService.getCurrentAuthenticatedUserOrThrow();
         EventEntity event = getEventEntity(eventId);
         checkOwnerAndDateAndStatus(user, event);
@@ -129,7 +139,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventOutDto> searchEvent(EventSearchDto eventSearchDto) {
+    public List<EventResponseDto> searchEvent(EventSearchDto eventSearchDto) {
         return eventRepository.searchEventByFilter(
                         eventSearchDto.name(),
                         eventSearchDto.placesMin(),
@@ -150,7 +160,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventOutDto> getAllEventsByOwner() {
+    public List<EventResponseDto> getAllEventsByOwner() {
         User user = authenticationService.getCurrentAuthenticatedUserOrThrow();
 
         return eventRepository.findAllByOwnerId(user.id()).stream()
@@ -173,7 +183,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventOutDto> getAllEventsByRegisterUser() {
+    public List<EventResponseDto> getAllEventsByRegisterUser() {
         User user = authenticationService.getCurrentAuthenticatedUserOrThrow();
 
         return eventRepository.getAllEventsByUser(user.id()).stream()
