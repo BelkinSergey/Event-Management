@@ -1,7 +1,7 @@
 package belkin.dev.security;
 
-import belkin.dev.user.model.UserEntity;
-import belkin.dev.user.repository.UserRepository;
+import belkin.dev.users.model.UserEntity;
+import belkin.dev.users.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

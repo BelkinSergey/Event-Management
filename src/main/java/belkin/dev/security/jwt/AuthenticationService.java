@@ -1,8 +1,8 @@
 package belkin.dev.security.jwt;
 
 
-import belkin.dev.user.SignInRequest;
-import belkin.dev.user.dto.User;
+import belkin.dev.users.SignInRequest;
+import belkin.dev.users.dto.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
