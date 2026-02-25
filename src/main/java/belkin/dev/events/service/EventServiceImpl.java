@@ -5,6 +5,9 @@ import belkin.dev.events.EventStatus;
 import belkin.dev.events.dto.Event;
 import belkin.dev.events.dto.EventResponseDto;
 import belkin.dev.events.dto.EventSearchDto;
+import belkin.dev.events.kafka.EventNotificationSender;
+import belkin.dev.events.kafka.dto.NotificationDto;
+import belkin.dev.events.kafka.mapper.NotificationMapper;
 import belkin.dev.events.mapper.EventMapper;
 import belkin.dev.events.model.EventEntity;
 import belkin.dev.events.model.RegistrationEntity;
@@ -31,18 +34,22 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
     private final RegistrationRepository registrationRepository;
+    private final NotificationMapper notificationMapper;
+    private final EventNotificationSender eventNotificationSender;
 
 
     public EventServiceImpl(LocationService locationService,
                             AuthenticationService authenticationService,
                             EventMapper eventMapper,
                             EventRepository eventRepository,
-                            RegistrationRepository registrationRepository) {
+                            RegistrationRepository registrationRepository, NotificationMapper notificationMapper, EventNotificationSender eventNotificationSender) {
         this.locationService = locationService;
         this.authenticationService = authenticationService;
         this.eventMapper = eventMapper;
         this.eventRepository = eventRepository;
         this.registrationRepository = registrationRepository;
+        this.notificationMapper = notificationMapper;
+        this.eventNotificationSender = eventNotificationSender;
     }
 
     @Override
@@ -58,7 +65,18 @@ public class EventServiceImpl implements EventService {
                 EventStatus.WAIT_START.toString(),
                 null
         );
-        return eventMapper.toOutDtoFromEntity(eventRepository.save(entity));
+
+        EventEntity createdEntity = eventRepository.save(entity);
+
+        NotificationDto notificationDto = notificationMapper.toNotificationDtoFromEntity(
+                null,
+                createdEntity,
+                user,
+                createdEntity.getStatus());
+
+        eventNotificationSender.sendNotification(notificationDto);
+
+        return eventMapper.toOutDtoFromEntity(createdEntity);
 
 
     }
@@ -124,6 +142,14 @@ public class EventServiceImpl implements EventService {
         );
 
         EventEntity updatedEvent = getEventEntity(eventId);
+        NotificationDto notificationDto = notificationMapper.toNotificationDtoFromEntity(event,
+                updatedEvent,
+                user,
+                updatedEvent.getStatus());
+
+        eventNotificationSender.sendNotification(notificationDto);
+
+
         return eventMapper.toOutDtoFromEntity(updatedEvent);
     }
 
@@ -133,8 +159,11 @@ public class EventServiceImpl implements EventService {
         User user = authenticationService.getCurrentAuthenticatedUserOrThrow();
         EventEntity eventEntity = getEventEntity(eventId);
         checkOwnerAndStatus(user, eventEntity);
+
+        NotificationDto notificationDto = notificationMapper.toNotificationDtoToDelete(eventEntity, user);
+
         eventEntity.setStatus(EventStatus.CANCELLED.toString());
-        eventRepository.save(eventEntity);
+        eventNotificationSender.sendNotification(notificationDto);
     }
 
     @Override

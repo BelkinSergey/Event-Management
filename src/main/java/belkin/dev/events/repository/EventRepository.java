@@ -97,5 +97,34 @@ public interface EventRepository extends JpaRepository<EventEntity, Integer> {
             AND (date + (duration || ' minutes')::interval) <= CURRENT_TIMESTAMP
             """, nativeQuery = true)
     void updateStartedEvent(@Param("status") String status);
+
+
+    @Query("""
+            SELECT e from EventEntity e
+            WHERE e.status = 'WAIT_START'
+            AND e.date <= CURRENT_TIMESTAMP
+            """
+    )
+    List<EventEntity> findStartedEvents();
+
+
+    @Query(value = """
+                SELECT *
+                FROM events e
+                WHERE e.status = 'STARTED'
+                  AND (e.date + (e.duration * interval '1 minute')) <= CURRENT_TIMESTAMP
+            """, nativeQuery = true)
+    List<EventEntity> findFinishedEvents();
+
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            UPDATE EventEntity e
+            SET e.status = :status
+            WHERE e.id IN :ids
+            """)
+    void updateStatusBatch(@Param("ids") List<Integer> ids, @Param("status") String status);
+
+
 }
 

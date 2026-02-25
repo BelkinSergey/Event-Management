@@ -27,6 +27,21 @@ public class EventMapper {
         );
     }
 
+    public Event toEventFromEntity(EventEntity eventEntity) {
+
+        return new Event(
+
+                eventEntity.getName(),
+                eventEntity.getMaxPlaces(),
+                eventEntity.getDate(),
+                eventEntity.getCost(),
+                eventEntity.getDuration(),
+                eventEntity.getLocationId()
+
+        );
+
+    }
+
     public EventEntity toEntityFromEvent(Event event,
                                          Integer userId,
                                          Integer occupiedPlaces,
